@@ -1,4 +1,4 @@
-// Declaración de constantes y variables
+// variables
 const productos = [
   { id: 1, nombre: "Almendras oscuras de 50 grs", precio: 21.0 },
   { id: 2, nombre: "Avena con cacao 400g", precio: 12.5 },
@@ -12,66 +12,108 @@ const productos = [
   { id: 10, nombre: "Chocolate semi-amargo 100g 70% cacao", precio: 27.0 },
 ];
 
-let carrito = []; // Array para almacenar los productos seleccionados
+// Obtener el carrito de localStorage
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Función para mostrar el menú de productos y seleccionarlos
-function mostrarMenuProductos() {
-  let listaProductos =
-    "Elige un número de producto para agregar al carrito o cero para salir:\n";
-  productos.forEach((producto) => {
-    listaProductos += `${producto.id}. ${
-      producto.nombre
-    } - $${producto.precio.toFixed(2)}\n`;
-  });
-  listaProductos += "0. Finalizar compra";
-
-  let productoId = parseInt(prompt(listaProductos));
-  if (productoId === 0) {
-    finalizarCompra();
-  } else {
-    agregarProductoAlCarrito(productoId);
+// Función para mostrar los productos en la página
+function mostrarProductos() {
+  // Obtener el elemento UL donde se mostrarán los productos
+  var lista = document.getElementById("lista-productos");
+  lista.innerHTML = "";
+  // Recorrer el array de productos y crear un elemento por cada uno
+  for (var i = 0; i < productos.length; i++) {
+    var producto = productos[i];
+    var li = document.createElement("li");
+    li.className =
+      "list-group-item d-flex justify-content-between align-items-center";
+    li.innerHTML =
+      producto.nombre +
+      " - $" +
+      producto.precio.toFixed(2) +
+      '<button class="btn btn-primary btn-sm ms-2" onclick="agregarProductoAlCarrito(' +
+      producto.id +
+      ')">Agregar</button>';
+    lista.appendChild(li);
   }
 }
 
-// Función para agregar un producto al carrito
+// moostrar el carrito en la página
+function mostrarCarrito() {
+  var lista = document.getElementById("lista-carrito");
+  lista.innerHTML = "";
+  var total = 0;
+  for (var i = 0; i < carrito.length; i++) {
+    var producto = carrito[i];
+    var li = document.createElement("li");
+    li.className =
+      "list-group-item d-flex justify-content-between align-items-center";
+    li.innerHTML =
+      producto.nombre +
+      " - $" +
+      producto.precio.toFixed(2) +
+      '<button class="btn btn-danger btn-sm ms-2" onclick="eliminarProductoDelCarrito(' +
+      i +
+      ')">Eliminar</button>';
+    lista.appendChild(li);
+    total += producto.precio;
+  }
+  document.getElementById("total-carrito").textContent = total.toFixed(2);
+}
+
+// Agregar un producto al carrito
 function agregarProductoAlCarrito(productoId) {
-  const producto = productos.find((p) => p.id === productoId);
-  if (producto) {
-    carrito.push(producto);
-    console.log(`Has agregado "${producto.nombre}" al carrito.`);
-    console.log(`Total de productos en el carrito: ${carrito.length}`);
-    alert(`Has agregado "${producto.nombre}" al carrito.`);
-  } else {
-    alert("Producto no válido. Intenta nuevamente.");
-    console.log("Producto no válido. Intenta nuevamente.");
+  // Buscar el producto por su id
+  for (var i = 0; i < productos.length; i++) {
+    if (productos[i].id === productoId) {
+      carrito.push(productos[i]);
+      break;
+    }
   }
-  mostrarMenuProductos();
+  // Guardar el carrito en localStorage
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  mostrarCarrito();
 }
 
-// fin de la compra y moestrar el total
+// Función para eliminar un producto del carrito por su índice
+function eliminarProductoDelCarrito(indice) {
+  // Eliminar el producto del array
+  carrito.splice(indice, 1);
+  // Guardar el carrito actualizado en localStorage
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  mostrarCarrito();
+}
+
+// finalizar la compra
 function finalizarCompra() {
+  // Obtener el área de mensajes
+  var mensajeDiv = document.getElementById("mensaje-compra");
+  // Limpiar los mensajes anteriores
+  mensajeDiv.innerHTML = "";
+  // Si el carrito está vacío, mostrar mensaje en la página
   if (carrito.length === 0) {
-    alert("No has seleccionado ningún producto.");
-    console.log("No has seleccionado ningún producto.");
+    mensajeDiv.innerHTML =
+      '<div class="alert alert-warning mt-2">No has seleccionado ningún producto.</div>';
     return;
   }
-
-  let total = carrito.reduce(
-    (acumulador, producto) => acumulador + producto.precio,
-    0
-  );
-  let detalleCompra = "Detalle de tu compra:\n";
-  carrito.forEach((producto, index) => {
-    detalleCompra += `${index + 1}. ${
-      producto.nombre
-    } - $${producto.precio.toFixed(2)}\n`;
-  });
-  detalleCompra += `\nTotal a pagar: $${total.toFixed(2)}`;
-
-  alert(detalleCompra);
-  console.log(detalleCompra);
-  carrito = []; // Vaciar el carrito después de la compra
+  // Se calcula el total
+  var total = 0;
+  for (var i = 0; i < carrito.length; i++) {
+    total += carrito[i].precio;
+  }
+  // Mensaje de compra exitosa en la página
+  mensajeDiv.innerHTML =
+    '<div class="alert alert-success mt-2">¡Gracias por tu compra!<br>Total pagado: $' +
+    total.toFixed(2) +
+    "</div>";
+  // Vaciar el carrito y actualizar localStorage
+  carrito = [];
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+  mostrarCarrito();
 }
 
-// Iniciar el programa
-mostrarMenuProductos();
+// Se asocia el  evento al botón de finalizar compra
+window.onload = function () {
+  mostrarProductos();
+  mostrarCarrito();
+  document.getElementById("finalizar-compra").onclick = finalizarCompra;
+};
