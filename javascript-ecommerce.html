@@ -13,20 +13,16 @@
       crossorigin="anonymous"
     />
 
-    <title>Javascript Coder</title>
+    <title>Mercado Calidad México</title>
   </head>
   <body class="bg-light">
     <div class="container text-center mt-5">
-      <h1 class="display-4 text-primary">Carrito de Compras</h1>
+      <h1 class="display-4 text-primary">
+        Bienvenido a Mercado-Calidad-México
+      </h1>
       <p class="lead">
-        Este proyecto es un carrito de compras para los productos de chocolate
-        "Cacep".
-      </p>
-      <p class="lead">
-        Permite al usuario seleccionar productos, agregarlos al carrito y
-        calcular el total de la compra. La interacción se realiza mediante la
-        propia página usando DOM, se evitan cuadros de diálogo y la consola del
-        navegador.
+        Selecciona los productos que deseas comprar y finalmente presiona el
+        botón Finalizar compra.
       </p>
     </div>
 
@@ -38,6 +34,7 @@
           <ul id="lista-productos" class="list-group mb-3">
             <!-- Los productos se insertarán aquí con JavaScript -->
           </ul>
+          <div id="paginacion-productos" class="mb-3"></div>
         </div>
         <!-- Carrito de compras -->
         <div class="col-md-6">
@@ -57,14 +54,17 @@
       </div>
     </div>
 
-    <!-- Optional JavaScript; choose one of the two! -->
+    <!-- bootstrap -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
 
-    <!-- Reference to the local JavaScript file -->
     <script src="javascript.js"></script>
+    <!-- SweetAlert2 para notificaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- dayjs para manejo de fechas -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
   </body>
 </html>
